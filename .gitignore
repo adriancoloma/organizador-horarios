@@ -2,3 +2,5 @@ api/node_modules
 ./frontend/node_modules
 .vscode
 nodemon.json
+api/bundle.js.LICENSE.txt
+api/webpack.config.js

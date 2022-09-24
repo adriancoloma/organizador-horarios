@@ -1,0 +1,29 @@
+{
+  "name": "organizador-horarios",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./api/bundle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adriancoloma/organizador-horarios.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.1"
+  },
+  "files":[
+    "frontend",
+    "api/bundle.js"
+  ],
+  "bugs": {
+    "url": "https://github.com/adriancoloma/organizador-horarios/issues"
+  },
+  "homepage": "https://github.com/adriancoloma/organizador-horarios#readme"
+}
