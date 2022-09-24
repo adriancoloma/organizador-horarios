@@ -26,14 +26,30 @@ class Materia{
         for(let horario of this.horarios){
             for(let horarioMateria of materia.horarios){
                 if(horario.dia == horarioMateria.dia){
-                    if(horario.horaInicio >= horarioMateria.horaInicio && horario.horaInicio <= horarioMateria.horaFin){
+                    if(this.perteneceIntervalo(horario.horaInicio, horario.horaFin, horarioMateria.horaInicio, horarioMateria.horaFin)){
                         return true;
                     }
-                    if(horario.horaFin >= horarioMateria.horaInicio && horario.horaFin <= horarioMateria.horaFin){
+
+                    if(this.perteneceIntervalo(horarioMateria.horaInicio, horarioMateria.horaFin, horario.horaInicio, horario.horaFin)){
+                        return true;
+                    }
+
+                    if(horario.horaInicio == horarioMateria.horaInicio && horario.horaFin == horarioMateria.horaFin){
                         return true;
                     }
                 }
             }
+        }
+
+        return false;
+    }
+
+    private perteneceIntervalo(num1:number, num2:number, limInf: number, limSup: number): boolean{
+        if(num1 > limInf && num1 < limSup){
+            return true;
+        }
+        if(num2 > limInf && num2 < limSup){
+            return true;
         }
 
         return false;
