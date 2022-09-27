@@ -9,8 +9,18 @@ export default {
       nombreMateria: "",
       horarios: [{ dia: "lunes", horaInicio: null, horaFin: null }, { dia: "martes", horaInicio: null, horaFin: null }, { dia: "miercoles", horaInicio: null, horaFin: null }, { dia: "jueves", horaInicio: null, horaFin: null }, { dia: "viernes", horaInicio: null, horaFin: null }, { dia: "sabado", horaInicio: null, horaFin: null }],
       seOrdeno: false,
-      organizando: false
+      organizando: false,
+      horarioOrganizado : []
     };
+  },
+  mounted() {
+    window.addEventListener("hashchange", () => {
+      if(window.location.hash == ""){
+        this.seOrdeno = false;
+      }else if(window.location.hash == "#horario-organizado"){
+        this.organizar();
+      }
+    });
   },
   methods: {
     agregarMateria() {
@@ -48,7 +58,7 @@ export default {
 
 
       }).then(response => response.json()).then(data => {
-        this.materias = data;
+        this.horarioOrganizado = data;
         this.seOrdeno = true;
         this.organizando = false;
       }).catch(error => {
@@ -92,6 +102,15 @@ export default {
     },
 
 
+  },
+  watch:{
+    seOrdeno(seOrdeno){
+      if(seOrdeno){
+        window.location.hash = "#horario-organizado";
+      }else{
+        window.location.hash = "";
+      }
+    }
   },
   components: { Horario }
 }
@@ -152,8 +171,9 @@ export default {
       <h1 class="d-md-block d-none">¡Tu horario ha sido organizado con éxito!</h1>
       <h3 class="d-md-none d-block">¡Tu horario ha sido organizado con éxito!</h3>
   </div>
-    <Horario :materias="materias" :acciones="!seOrdeno" :eliminarMateria="eliminarMateria"></Horario>
-
+    <Horario v-if="seOrdeno" :materias="horarioOrganizado" :acciones="false"></Horario>
+    <Horario v-else :materias="materias" :acciones="true" :eliminarMateria="eliminarMateria"></Horario>
+    
     <div v-if="!seOrdeno" class="container-fluid d-flex justify-content-center">
       <div>
         <button type="button" class="btn btn-primary btn-lg m-2" @click="organizar">Organizar</button>
