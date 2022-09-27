@@ -5,13 +5,19 @@ import Horario from './Horario.vue';
 export default {
   data() {
     return {
+      metodosOrganizacion: null,
+      metodoOrganizacion: "masHoras",
       materias: [],
       nombreMateria: "",
       horarios: [{ dia: "lunes", horaInicio: null, horaFin: null }, { dia: "martes", horaInicio: null, horaFin: null }, { dia: "miercoles", horaInicio: null, horaFin: null }, { dia: "jueves", horaInicio: null, horaFin: null }, { dia: "viernes", horaInicio: null, horaFin: null }, { dia: "sabado", horaInicio: null, horaFin: null }],
       seOrdeno: false,
       organizando: false,
-      horarioOrganizado : []
+      horarioOrganizado : [],
+      
     };
+  },
+  created() {
+    this.getMetodosOrganizacion();
   },
   mounted() {
     window.addEventListener("hashchange", () => {
@@ -54,7 +60,7 @@ export default {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ materias: this.materias }),
+        body: JSON.stringify({metodoOrganizacion: this.metodoOrganizacion, materias: this.materias }),
 
 
       }).then(response => response.json()).then(data => {
@@ -101,6 +107,15 @@ export default {
       input.click();
     },
 
+    getMetodosOrganizacion() {
+      fetch('/api/metodos-organizacion').then(response => response.json()).then(data => {
+        this.metodosOrganizacion = data;
+      }).catch(error => {
+        alert("Error al conectar con el servidor");
+        console.log(error);
+      });
+    }
+
 
   },
   watch:{
@@ -125,6 +140,16 @@ export default {
       </div>
       <div>
         <input type="text" v-model="nombreMateria">
+      </div>
+    </div>
+    <div class="d-flex m-4 justify-content-center">
+      <div class="mx-4">
+        Metodo de organizacion:
+      </div>
+      <div>
+        <select v-model="metodoOrganizacion">
+          <option v-for="(value, key) in metodosOrganizacion" :value="key" selected >{{value}}</option>
+        </select>
       </div>
     </div>
     <div class="table-responsive">

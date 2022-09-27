@@ -7,6 +7,7 @@ enum Dia{
     Sabado = "sabado",
 }
 
+
 interface Horario{
     dia: Dia;
     horaInicio: number;
@@ -44,6 +45,14 @@ class Materia{
         return false;
     }
 
+    public getNumeroHoras() : number{
+        let horas = 0;
+        for(let horario of this.horarios){
+            horas += horario.horaFin - horario.horaInicio;
+        }
+
+        return horas;
+    }
     private perteneceIntervalo(num1:number, num2:number, limInf: number, limSup: number): boolean{
         if(num1 > limInf && num1 < limSup){
             return true;
@@ -58,6 +67,12 @@ class Materia{
 }
 
 class OrganizadorHorario{
+    private static metodosOrganizacion = {masHoras: "Horario con mas horas", aleatorio: "Horario aleatorio"};
+    private metodoOrganizacion: string;
+    
+    constructor(metodoOrganizacion: string){
+        this.metodoOrganizacion = metodoOrganizacion;
+    }
     private shuffle(materias: Materia[]){
         for(let i = materias.length - 1; i > 0; i--){
             let j = Math.floor(Math.random() * (i + 1));
@@ -66,7 +81,40 @@ class OrganizadorHorario{
     }
     public organizar(materias: Materia[]) : Materia[] {
         let horario: Materia[] = [];
-        this.shuffle(materias);
+        let metodos = Object.keys(OrganizadorHorario.metodosOrganizacion);
+        switch(this.metodoOrganizacion){
+            case metodos[0]:
+                horario = this.obtenerHorarioConMasHoras(materias);
+                break;
+            case metodos[1]:
+                this.shuffle(materias);
+                horario = this.organizarHelper(materias);
+                break;
+        }
+                
+        return horario;
+    }
+
+    private obtenerHorarioConMasHoras(materias: Materia[]): Materia[]{
+        let mayorNumeroHoras = 0;
+        let horarioMayorNumeroHoras: Materia[] = [];
+        for(let i = 0; i < 50; i++){
+            this.shuffle(materias);
+            let horario = this.organizarHelper(materias);
+            let numeroHoras = getNumeroHoras(horario);
+            if(numeroHoras > mayorNumeroHoras){
+                mayorNumeroHoras = numeroHoras;
+                horarioMayorNumeroHoras = horario;
+            }
+        }
+            
+        return horarioMayorNumeroHoras;
+    }
+                
+        
+
+    private organizarHelper(materias: Materia[]) : Materia[] {
+        let horario: Materia[] = [];
         for(let materia of materias){
             let colisiona = false;
             for(let materiaHorario of horario){
@@ -83,6 +131,19 @@ class OrganizadorHorario{
 
         return horario;
     }
+
+    static getMetodosOrganizacion(){
+        return this.metodosOrganizacion;
+    }
+}
+
+function getNumeroHoras(horario: Materia[]): number{
+    let horas = 0;
+    for(let materia of horario){
+        horas += materia.getNumeroHoras();
+    }
+
+    return horas;
 }
 
 export function toMaterias(materias : any[]) : Materia[]{
