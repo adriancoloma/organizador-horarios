@@ -58,9 +58,15 @@ class Materia{
 }
 
 class OrganizadorHorario{
+    private shuffle(materias: Materia[]){
+        for(let i = materias.length - 1; i > 0; i--){
+            let j = Math.floor(Math.random() * (i + 1));
+            [materias[i], materias[j]] = [materias[j], materias[i]];
+        }
+    }
     public organizar(materias: Materia[]) : Materia[] {
         let horario: Materia[] = [];
-
+        this.shuffle(materias);
         for(let materia of materias){
             let colisiona = false;
             for(let materiaHorario of horario){
