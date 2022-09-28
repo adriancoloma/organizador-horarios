@@ -18,6 +18,11 @@ export default {
   },
   created() {
     this.getMetodosOrganizacion();
+    let materiasGuardadas = localStorage.getItem("materias");
+    if(materiasGuardadas){
+      this.materias = JSON.parse(materiasGuardadas);
+    }
+    
   },
   mounted() {
     window.addEventListener("hashchange", () => {
@@ -125,7 +130,14 @@ export default {
       }else{
         window.location.hash = "";
       }
+    },
+    materias:{
+      handler(materias){
+        localStorage.setItem("materias", JSON.stringify(materias));
+      },
+      deep: true
     }
+    
   },
   components: { Horario }
 }
