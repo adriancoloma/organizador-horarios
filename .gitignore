@@ -4,3 +4,4 @@ api/node_modules
 nodemon.json
 api/bundle.js.LICENSE.txt
 api/webpack.config.js
+*.xlsx

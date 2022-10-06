@@ -14,9 +14,9 @@ interface Horario{
     horaFin: number;
 }
 
-class Materia{
-    private nombre: string;
-    private horarios: Horario[];
+export class Materia{
+    public nombre: string;
+    public horarios: Horario[];
 
     constructor(nombre: string, horarios: Horario[]){
         this.nombre = nombre;
@@ -70,7 +70,7 @@ class OrganizadorHorario{
     private static metodosOrganizacion = {masHoras: "Horario con mas horas", aleatorio: "Horario aleatorio"};
     private metodoOrganizacion: string;
     
-    constructor(metodoOrganizacion: string){
+    constructor(metodoOrganizacion: string = OrganizadorHorario.metodosOrganizacion.masHoras){
         this.metodoOrganizacion = metodoOrganizacion;
     }
     private shuffle(materias: Materia[]){
@@ -79,6 +79,7 @@ class OrganizadorHorario{
             [materias[i], materias[j]] = [materias[j], materias[i]];
         }
     }
+
     public organizar(materias: Materia[]) : Materia[] {
         let horario: Materia[] = [];
         let metodos = Object.keys(OrganizadorHorario.metodosOrganizacion);
@@ -93,6 +94,30 @@ class OrganizadorHorario{
         }
                 
         return horario;
+    }
+
+    public getHorarioOrdenado(horario: Materia[]) : string[][]{
+        let horarioOrdenado: string[][] = [];
+        let horaMinima = getHoraMinima(horario);
+        let horaMaxima = getHoraMaxima(horario);
+
+        for(let i = horaMinima; i < horaMaxima; i++){
+            horarioOrdenado.push([`${i}-${i+1}`]);
+        }
+        for(let materia of horario){
+            for(let horarioMateria of materia.horarios){
+                let fila = horarioMateria.horaInicio - horaMinima;
+                let columna = getNumeroDia(horarioMateria.dia) + 1;
+                for(let i = 0; i < horarioMateria.horaFin - horarioMateria.horaInicio; i++){
+                    if(horarioOrdenado[fila + i] == undefined){
+                        horarioOrdenado[fila + i] = [];
+                    }
+                    horarioOrdenado[fila + i][columna] = materia.nombre;
+                }
+            }
+        }
+
+        return horarioOrdenado;
     }
 
     private obtenerHorarioConMasHoras(materias: Materia[]): Materia[]{
@@ -144,6 +169,42 @@ function getNumeroHoras(horario: Materia[]): number{
     }
 
     return horas;
+}
+
+function getHoraMaxima(horario: Materia[]) : number{
+    let horaMaxima = 0;
+    for(let materia of horario){
+        for(let horario of materia.horarios){
+            if(horario.horaFin > horaMaxima){
+                horaMaxima = horario.horaFin;
+            }
+        }
+    }
+
+    return horaMaxima;
+}
+
+function getHoraMinima(horario: Materia[]) : number{
+    let horaMinima = 24;
+    for(let materia of horario){
+        for(let horario of materia.horarios){
+            if(horario.horaInicio < horaMinima){
+                horaMinima = horario.horaInicio;
+            }
+        }
+    }
+
+    return horaMinima;
+
+}
+
+function getNumeroDia(dia: Dia) : number{
+    let dias = Object.keys(Dia);
+    for(let i = 0; i < dias.length; i++){
+        if(dias[i] == dia){
+            return i;
+        }
+    }
 }
 
 export function toMaterias(materias : any[]) : Materia[]{
