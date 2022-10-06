@@ -16,6 +16,7 @@ interface Horario{
 
 export class Materia{
     public nombre: string;
+    public color: string;
     public horarios: Horario[];
 
     constructor(nombre: string, horarios: Horario[]){

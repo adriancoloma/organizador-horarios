@@ -1,6 +1,6 @@
 import * as express from "express";
 import GeneradorExcel from "./GeneradorExcel";
-import OrganizadorHorario, {toMaterias} from "./OrganizadorHorarios";
+import OrganizadorHorario, {Materia, toMaterias} from "./OrganizadorHorarios";
 let router = express.Router();
 let generadorExcel = new GeneradorExcel();
 let organizadorHorario = new OrganizadorHorario();
@@ -20,9 +20,10 @@ router.get('/metodos-organizacion', (req, res) => {
 
 router.post('/crear-excel', (req, res) => {
     let horario = req.body.horario;
-    let horarioOrdenado = organizadorHorario.getHorarioOrdenado(toMaterias(horario));
+    let materias : Materia[] = toMaterias(horario);
+    let horarioOrdenado = organizadorHorario.getHorarioOrdenado(materias);
     console.log(horarioOrdenado);
-    let pathExcel = generadorExcel.generarExcel(horarioOrdenado);
+    let pathExcel = generadorExcel.generarExcel(horarioOrdenado, horario);
 
     res.json({path: pathExcel});
 

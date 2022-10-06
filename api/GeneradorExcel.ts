@@ -1,10 +1,10 @@
-import {Materia} from './OrganizadorHorarios';
+import { Materia } from './OrganizadorHorarios';
 import * as Excel from 'exceljs';
-export default class GeneradorExcel{
+export default class GeneradorExcel {
     private codigoArchivoActual = 0;
     private carpeta = "./excel";
 
-    public generarExcel(tabla: string[][]) : string{
+    public generarExcel(tabla: string[][], materias: Materia[]): string {
         let workbook = new Excel.Workbook();
         let worksheet = workbook.addWorksheet('Horario');
         worksheet.columns = [
@@ -17,12 +17,13 @@ export default class GeneradorExcel{
             { header: 'Sabado', key: 'sabado', width: 30 },
         ];
 
-        for(let fila of tabla){
+        for (let fila of tabla) {
             worksheet.addRow(fila);
         }
 
         this.unirCeldasConMismoContenido(worksheet);
-        this.centrarContenidoCeldas(worksheet);
+        this.decorar(worksheet);
+        this.pintarMaterias(worksheet, materias);
         let nombreArchivo = this.carpeta + "/horario" + this.codigoArchivoActual + ".xlsx";
         this.codigoArchivoActual++;
         workbook.xlsx.writeFile(nombreArchivo);
@@ -30,29 +31,29 @@ export default class GeneradorExcel{
         return nombreArchivo;
     }
 
-    private unirCeldasConMismoContenido(worksheet: Excel.Worksheet){
+    private unirCeldasConMismoContenido(worksheet: Excel.Worksheet) {
         let numFilas = worksheet.rowCount;
         let numColumnas = worksheet.columnCount;
 
         worksheet.columns.forEach(column => {
-            let materiaActual : string = "";
-            let filaMateriaEmpieza : number = 0;
-            let celdasQueSeUniran : number = 0;
+            let materiaActual: string = "";
+            let filaMateriaEmpieza: number = 0;
+            let celdasQueSeUniran: number = 0;
 
             column.eachCell((cell, i) => {
-                let contenidoCelda : string = cell.value == null ? null : cell.value.toString();
-                
-                if(contenidoCelda == null && celdasQueSeUniran == 1){
+                let contenidoCelda: string = cell.value == null ? null : cell.value.toString();
+
+                if (contenidoCelda == null && celdasQueSeUniran == 1) {
                     celdasQueSeUniran = 0;
                     return;
                 }
-                if(contenidoCelda == materiaActual){
+                if (contenidoCelda == materiaActual) {
                     celdasQueSeUniran++;
-                    if(i == numFilas && celdasQueSeUniran > 1 && materiaActual != ""){
+                    if (i == numFilas && celdasQueSeUniran > 1 && materiaActual != "") {
                         worksheet.mergeCells(filaMateriaEmpieza, column.number, i, column.number);
-                    } 
-                }else{
-                    if(materiaActual != "" && filaMateriaEmpieza != i - 1 && celdasQueSeUniran > 0){
+                    }
+                } else {
+                    if (materiaActual != "" && filaMateriaEmpieza != i - 1 && celdasQueSeUniran > 0) {
                         worksheet.mergeCells(filaMateriaEmpieza, column.number, i - 1, column.number);
                     }
 
@@ -64,10 +65,35 @@ export default class GeneradorExcel{
         })
     }
 
-    private centrarContenidoCeldas(worksheet: Excel.Worksheet){
+    private decorar(worksheet: Excel.Worksheet) {
         worksheet.columns.forEach(column => {
             column.eachCell((cell, i) => {
                 cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                cell.border = {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' }
+                };
+            });
+        })
+    }
+
+    private pintarMaterias(worksheet: Excel.Worksheet, materias: Materia[]) {
+        worksheet.columns.forEach(column => {
+            column.eachCell((cell, i) => {
+                let contenidoCelda: string = cell.value == null ? null : cell.value.toString();
+                let materia = materias.find(m => m.nombre == contenidoCelda);
+                if(materia == null){
+                    return;
+                }
+
+                let color = materia.color.slice(1);
+                cell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: 'FF' + color}
+                }
             });
         })
     }
