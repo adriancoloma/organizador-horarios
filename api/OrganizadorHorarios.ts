@@ -71,7 +71,7 @@ class OrganizadorHorario{
     private static metodosOrganizacion = {masHoras: "Horario con mas horas", aleatorio: "Horario aleatorio"};
     private metodoOrganizacion: string;
     
-    constructor(metodoOrganizacion: string = OrganizadorHorario.metodosOrganizacion.masHoras){
+    constructor(metodoOrganizacion: string = "masHoras"){
         this.metodoOrganizacion = metodoOrganizacion;
     }
     private shuffle(materias: Materia[]){
@@ -200,7 +200,7 @@ function getHoraMinima(horario: Materia[]) : number{
 }
 
 function getNumeroDia(dia: Dia) : number{
-    let dias = Object.keys(Dia);
+    let dias = Object.values(Dia);
     for(let i = 0; i < dias.length; i++){
         if(dias[i] == dia){
             return i;

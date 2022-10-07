@@ -8,6 +8,7 @@ let app = express();
 //app.use(cors({origin: '*'}));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
+
 app.use('/api', router);
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, '../frontend/dist/index.html')));
 app.listen(port, () => console.log("Server iniciado en el puerto " + port));

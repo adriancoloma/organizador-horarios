@@ -1,10 +1,8 @@
 import { Materia } from './OrganizadorHorarios';
 import * as Excel from 'exceljs';
+import {Response } from 'express';
 export default class GeneradorExcel {
-    private codigoArchivoActual = 0;
-    private carpeta = "./excel";
-
-    public generarExcel(tabla: string[][], materias: Materia[]): string {
+    public generarExcel(tabla: string[][], materias: Materia[], out : Response){
         let workbook = new Excel.Workbook();
         let worksheet = workbook.addWorksheet('Horario');
         worksheet.columns = [
@@ -24,11 +22,9 @@ export default class GeneradorExcel {
         this.unirCeldasConMismoContenido(worksheet);
         this.decorar(worksheet);
         this.pintarMaterias(worksheet, materias);
-        let nombreArchivo = this.carpeta + "/horario" + this.codigoArchivoActual + ".xlsx";
-        this.codigoArchivoActual++;
-        workbook.xlsx.writeFile(nombreArchivo);
+        workbook.xlsx.write(out);
 
-        return nombreArchivo;
+       
     }
 
     private unirCeldasConMismoContenido(worksheet: Excel.Worksheet) {
@@ -88,11 +84,15 @@ export default class GeneradorExcel {
                     return;
                 }
 
-                let color = materia.color.slice(1);
+                let color = materia.color;
+                if(color == null){
+                    return;
+                }
+
                 cell.fill = {
                     type: 'pattern',
                     pattern: 'solid',
-                    fgColor: { argb: 'FF' + color}
+                    fgColor: { argb: 'FF' + color.slice(1)}
                 }
             });
         })
