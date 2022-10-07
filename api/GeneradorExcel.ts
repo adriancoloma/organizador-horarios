@@ -29,7 +29,6 @@ export default class GeneradorExcel {
 
     private unirCeldasConMismoContenido(worksheet: Excel.Worksheet) {
         let numFilas = worksheet.rowCount;
-        let numColumnas = worksheet.columnCount;
 
         worksheet.columns.forEach(column => {
             let materiaActual: string = "";
@@ -40,7 +39,7 @@ export default class GeneradorExcel {
                 let contenidoCelda: string = cell.value == null ? null : cell.value.toString();
 
                 if (contenidoCelda == null && celdasQueSeUniran == 1) {
-                    celdasQueSeUniran = 0;
+                    celdasQueSeUniran = 1;
                     return;
                 }
                 if (contenidoCelda == materiaActual) {
@@ -49,7 +48,7 @@ export default class GeneradorExcel {
                         worksheet.mergeCells(filaMateriaEmpieza, column.number, i, column.number);
                     }
                 } else {
-                    if (materiaActual != "" && filaMateriaEmpieza != i - 1 && celdasQueSeUniran > 0) {
+                    if (materiaActual != "" && filaMateriaEmpieza != i - 1 && celdasQueSeUniran > 1) {
                         worksheet.mergeCells(filaMateriaEmpieza, column.number, i - 1, column.number);
                     }
 
