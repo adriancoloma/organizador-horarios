@@ -19,9 +19,10 @@ export class Materia{
     public color: string;
     public horarios: Horario[];
 
-    constructor(nombre: string, horarios: Horario[]){
+    constructor(nombre: string, horarios: Horario[], color: string){
         this.nombre = nombre;
         this.horarios = horarios;
+        this.color = color;
     }
 
     public colisiona(materia: Materia): boolean{
@@ -211,7 +212,7 @@ function getNumeroDia(dia: Dia) : number{
 export function toMaterias(materias : any[]) : Materia[]{
     let materiasArray: Materia[] = [];
     for(let materia of materias){
-        materiasArray.push(new Materia(materia.nombre, materia.horarios));
+        materiasArray.push(new Materia(materia.nombre, materia.horarios, materia.color));
     }
 
     return materiasArray;

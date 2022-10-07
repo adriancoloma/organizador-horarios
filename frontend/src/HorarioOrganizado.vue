@@ -34,7 +34,7 @@ import Horario from './Horario.vue';
         <h1 class="d-md-block d-none">¡Tu horario ha sido organizado con éxito!</h1>
         <h3 class="d-md-none d-block">¡Tu horario ha sido organizado con éxito!</h3>
     </div>
-    <Horario :materias="materias" :acciones="false"></Horario>
+    <Horario :materias="materias" :acciones="false" :seleccionarColor="true"></Horario>
     <div class="text-center">
         <button class="btn btn-primary" @click="descargarExcel">Descargar excel</button>
     </div>

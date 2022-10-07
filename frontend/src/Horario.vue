@@ -3,7 +3,8 @@ export default {
     props: {
         materias: Array,
         acciones: Boolean,
-        eliminarMateria: Function
+        eliminarMateria: Function,
+        seleccionarColor: Boolean
     },
     methods:{
         getHorario(horarios, dia) {
@@ -24,6 +25,7 @@ export default {
                 <th>Viernes</th>
                 <th>Sabado</th>
                 <th v-if="acciones">Acciones</th>
+                <th v-if="seleccionarColor">Color</th>
             </tr>
         </thead>
         <tbody v-for="materia in materias" class="text-center">
@@ -69,6 +71,9 @@ export default {
                 </td>
                 <td v-if="acciones">
                     <button type="button" class="btn btn-danger" @click="eliminarMateria(materia)">Eliminar</button>
+                </td>
+                <td v-if="seleccionarColor">
+                    <input type="color" v-model="materia.color" >
                 </td>
             </tr>
 
