@@ -6,25 +6,35 @@ export default class GeneradorExcel {
         let workbook = new Excel.Workbook();
         let worksheet = workbook.addWorksheet('Horario');
         worksheet.columns = [
-            { header: 'Hora', key: 'hora', width: 10 },
-            { header: 'Lunes', key: 'lunes', width: 30 },
-            { header: 'Martes', key: 'martes', width: 30 },
-            { header: 'Miercoles', key: 'miercoles', width: 30 },
-            { header: 'Jueves', key: 'jueves', width: 30 },
-            { header: 'Viernes', key: 'viernes', width: 30 },
-            { header: 'Sabado', key: 'sabado', width: 30 },
+            { header: 'Hora', key: 'hora', width: 8 },
+            { header: 'Lunes', key: 'lunes'},
+            { header: 'Martes', key: 'martes'},
+            { header: 'Miercoles', key: 'miercoles'},
+            { header: 'Jueves', key: 'jueves' },
+            { header: 'Viernes', key: 'viernes' },
+            { header: 'Sabado', key: 'sabado' },
         ];
 
         for (let fila of tabla) {
             worksheet.addRow(fila);
         }
 
+
+        this.ajustarAnchoColumnas(worksheet);
         this.unirCeldasConMismoContenido(worksheet);
         this.decorar(worksheet);
         this.pintarMaterias(worksheet, materias);
         workbook.xlsx.write(out);
 
        
+    }
+
+    private ajustarAnchoColumnas(worksheet: Excel.Worksheet) {
+        worksheet.columns.slice(1).forEach(column => {
+            const longitudes = column.values.filter(value => value).map(value => value ? value.toString().length : 0).slice(1);
+            const max = Math.max(...longitudes);
+            column.width = max < 12 ? 12 : max;
+        });
     }
 
     private unirCeldasConMismoContenido(worksheet: Excel.Worksheet) {
